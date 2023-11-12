@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 namespace fs = std::filesystem;
 
@@ -13,48 +14,52 @@ extern "C" {
 }
 
 void testingProgram(const std::vector<std::string>& input, const std::vector<int>& expectedOutput) {
-    const char * fileName = "input.txt";
+    
+    // Создаем файл и записываем имя входящего файла
+    std::ofstream nameFile("name.txt");
+    nameFile << "input.txt";
+    nameFile.close();
+
+    const char* fileWithOutput = "output.txt";
+    const char * fileWithInput = "input.txt";
 
     // Записываем входные данные в файл
-    std::ofstream outFile(fileName);
-    outFile << fileName << std:: endl;
+    std::ofstream inFile(fileWithInput);
+ 
     for (const std::string& line : input) {
-        outFile << line << std::endl;
+        inFile << line << std::endl;
     }
-    outFile.close();
+    inFile.close();
+
+    // Открываем файл как stdin
+    freopen("name.txt", "r", stdin);
     
-    // Сохраняем старые буферы
-    std::streambuf* oldCoutBuf = std::cout.rdbuf();
-    std::streambuf* oldCinBuf = std::cin.rdbuf();
-
-    // Подключаем файл ввода
-    std::ifstream inputFile(fileName);
-    std::cin.rdbuf(inputFile.rdbuf());
-
-    // Захватываем вывод программы
-    std::stringstream capturedOutput;
-    std::cout.rdbuf(capturedOutput.rdbuf());
-
     ParentRoutine(getenv("PATH_TO_CHILD"));
+    
+    // Проверяем что файл с выводом был создан
+    ASSERT_TRUE(fs::exists(fileWithOutput));
+    std::ifstream outFile(fileWithOutput);
 
-    // Восстанавливаем буферы
-    std::cin.rdbuf(oldCinBuf);
-    std::cout.rdbuf(oldCoutBuf);
-
-    // Проверяем вывод программы
-    std::istringstream outputStream(capturedOutput.str());
-    for (const int &i : expectedOutput) {
-        int result;
-        outputStream >> result;
+    // Проверяем содержимое файла вывода
+    int result;
+    for (int i : expectedOutput) {
+        if (!(outFile >> result)) {
+            FAIL() << "Ошибка чтения из файла вывода";
+        }
         EXPECT_EQ(result, i);
     }
+
+    outFile.close();
+
+    
     auto removeIfExists = [](const char* path) {
         if(fs::exists(path)) {
             fs::remove(path);
         }
     };
 
-    removeIfExists(fileName);
+    removeIfExists(fileWithInput);
+    removeIfExists(fileWithOutput);
     
 }
 
