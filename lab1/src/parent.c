@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "parent.h"
 
-void ParentRoutine(const char* child_exec_name, FILE* stream) {
+void ParentRoutine(const char* child_exec_name) {
     // Создание pipe1
     int pipe1[2];
     CreatePipe(pipe1);
