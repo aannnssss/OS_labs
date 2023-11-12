@@ -3,6 +3,6 @@
 
 #include "utils.h"
 
-void ParentRoutine(const char* pathToChild, FILE* stream);
+void ParentRoutine(const char* pathToChild);
 
 #endif //OS_LABS_PARENT_H

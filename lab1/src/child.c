@@ -1,6 +1,6 @@
 #include "utils.h"
 
-int main(const int argc, const char* argv[]) {
+int main(void) {
     
     if(argc != 2) {
         printf("Necessary arguments were not provided\n");
