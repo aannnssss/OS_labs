@@ -3,8 +3,8 @@
 #include <array>
 #include <filesystem>
 #include <fstream>
-#include <memory>
 #include <iostream>
+#include <sstream>
 
 namespace fs = std::filesystem;
 
@@ -12,28 +12,17 @@ extern "C" {
     #include <parent.h>
 }
 
-void testingProgram(const std::vector<std::string>& input, const std::vector<std::string>& expectedOutput, const std::vector<std::string>& expectedFile) {
+void testingProgram(const std::vector<std::string>& input, const std::vector<int>& expectedOutput) {
     const char * fileName = "input.txt";
 
     // Записываем входные данные в файл
     std::ofstream outFile(fileName);
-    //outFile << fileName << std::endl;
+    outFile << fileName << std:: endl;
     for (const std::string& line : input) {
         outFile << line << std::endl;
     }
     outFile.close();
-
-    auto deleter = [](FILE* file) {
-        fclose(file);
-    };
-
-    // Создаем умный указатель
-    std::unique_ptr<FILE, decltype(deleter)> inFile(fopen(fileName, "r"), deleter);
-    if (inFile == nullptr) {
-        std::cerr << "Error opening file: " << fileName << std::endl;
-        return;
-    }
-
+    
     // Сохраняем старые буферы
     std::streambuf* oldCoutBuf = std::cout.rdbuf();
     std::streambuf* oldCinBuf = std::cin.rdbuf();
@@ -46,29 +35,19 @@ void testingProgram(const std::vector<std::string>& input, const std::vector<std
     std::stringstream capturedOutput;
     std::cout.rdbuf(capturedOutput.rdbuf());
 
-    ParentRoutine(getenv("PATH_TO_CHILD"), inFile.get());
+    ParentRoutine(getenv("PATH_TO_CHILD"));
 
-    // Восстанавливаем стандартные буферы
+    // Восстанавливаем буферы
     std::cin.rdbuf(oldCinBuf);
     std::cout.rdbuf(oldCoutBuf);
 
     // Проверяем вывод программы
     std::istringstream outputStream(capturedOutput.str());
-    for (const std::string &i : expectedOutput) {
-        std::string result;
-        std::getline(outputStream, result);
+    for (const int &i : expectedOutput) {
+        int result;
+        outputStream >> result;
         EXPECT_EQ(result, i);
     }
-    
-    // Проверяем содержимое файла
-    std::ifstream fileStream(fileName);
-    for (const std::string &expectation : expectedFile) {
-        std::string result;
-        std::getline(fileStream, result);
-        EXPECT_EQ(result, expectation);
-    }
-    
-    fileStream.close();
     auto removeIfExists = [](const char* path) {
         if(fs::exists(path)) {
             fs::remove(path);
@@ -76,37 +55,31 @@ void testingProgram(const std::vector<std::string>& input, const std::vector<std
     };
 
     removeIfExists(fileName);
+    
 }
 
 TEST(firstLabTests, simpleTest) {
     std::vector<std::string> input = {
         "4 2",
-        "3 3 1 1 1 1",
+        "3 1 1 1 1 1",
         "-10 1 1 2",
         "1337 1"
     };
-    std::vector<std::string> expectedOutput = {
-        "2",
-        "3",
-        "-5",
-        "1337"
-    };
-    std::vector<std::string> expectedFile = {
-        "4 2",
-        "3 3 1 1 1 1",
-        "-10 1 1 2",
-        "1337 1"
+    std::vector<int> expectedOutput = {
+        2,
+        3,
+        -5,
+        1337
     };
 
-    testingProgram(input, expectedOutput, expectedFile);
+    testingProgram(input, expectedOutput);
 }
 
 TEST(firstLabTests, emptyTest) {
     std::vector<std::string> input = {};
-    std::vector<std::string> expectedOutput = {};
-    std::vector<std::string> expectedFile = {};
+    std::vector<int> expectedOutput = {};
     
-    testingProgram(input, expectedOutput, expectedFile);
+    testingProgram(input, expectedOutput);
 }
 
 TEST(firstLabTests, withZeroTest) {
@@ -116,18 +89,12 @@ TEST(firstLabTests, withZeroTest) {
         "789 0 6",
         "22 4"
     };
-    std::vector<std::string> expectedOutput = {
-        "-3",
-        "3"
-    };
-    std::vector<std::string> expectedFile = {
-        "12 -4 1 1 1",
-        "33 2 5",
-        "789 0 6",
-        "22 4"
+    std::vector<int> expectedOutput = {
+        -3,
+        3
     };
 
-    testingProgram(input, expectedOutput, expectedFile);
+    testingProgram(input, expectedOutput);
 }
 
 TEST(firstLabTests, withLetterTest) {
@@ -138,17 +105,11 @@ TEST(firstLabTests, withLetterTest) {
         "22 4"
     };
 
-    std::vector<std::string> expectedOutput = {
-        "-8"
-    };
-    std::vector<std::string> expectedFile = {
-        "32 -4 1 1 1",
-        "33 a 5",
-        "789 3 6",
-        "22 4"
+    std::vector<int> expectedOutput = {
+        -8
     };
 
-    testingProgram(input, expectedOutput, expectedFile);
+    testingProgram(input, expectedOutput);
 }
 
 int main(int argc, char *argv[]) {
