@@ -2,6 +2,17 @@
 #include "parent.h"
 
 void ParentRoutine(const char* child_exec_name) {
+    // Читаем имя файла
+    char fileName[256];
+    fscanf(stdin, "%s", fileName);
+    
+    // Открываем файл для чтения
+    FILE* fp1 = freopen(fileName, "r", stdin);
+    if (fp1 == NULL) {
+        printf("Can't open file!\n");
+        exit(EXIT_FAILURE);
+    }
+    
     // Создание pipe1
     int pipe1[2];
     CreatePipe(pipe1);
@@ -14,22 +25,12 @@ void ParentRoutine(const char* child_exec_name) {
         exit(EXIT_FAILURE);
     } else if (pid == 0) { 
         // Дочерний процесс
+
         close(pipe1[READ_END]);
         
         // Перенаправляем стандартный вывод в pipe1[WRITE_END]
         if (dup2(pipe1[WRITE_END], STDOUT_FILENO) == -1) {
             printf("Can't change stdout!\n");
-            exit(EXIT_FAILURE);
-        }
-        
-        // Читаем имя файла из stream
-        char fileName[256];
-        fscanf(stdin, "%s", fileName);
-        
-        // Открываем файл для чтения
-        FILE* fp1 = freopen(fileName, "r", stdin);
-        if (fp1 == NULL) {
-            printf("Can't open file!\n");
             exit(EXIT_FAILURE);
         }
 
@@ -44,14 +45,24 @@ void ParentRoutine(const char* child_exec_name) {
     
     } else {
         // Родительский процесс
+        
         close(pipe1[WRITE_END]);
 
+        FILE* fp2 = freopen("output.txt", "w", stdin);
+        if (fp2 == NULL) {
+            printf("Can't create file!\n");
+            exit(EXIT_FAILURE);
+        }
+        
         int res;
         while (read(pipe1[READ_END], &res, sizeof(int))) {
-            printf("%d\n", res);
+            fprintf(fp2, "%d\n", res);
         }
+        fclose(fp2);
+        //printf("File closed successfully.\n");
 
         close(pipe1[READ_END]);
+
         wait(NULL);
     }
 }
