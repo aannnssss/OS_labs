@@ -2,11 +2,6 @@
 
 int main(void) {
     
-    if(argc != 2) {
-        printf("Necessary arguments were not provided\n");
-        exit(EXIT_FAILURE);
-    }
-    
     char* input = NULL;
     int strLength, result, number, start; // start - индекс начала след числа в строке
     char flag; // есть ли первое число

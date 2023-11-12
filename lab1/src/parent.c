@@ -24,7 +24,7 @@ void ParentRoutine(const char* child_exec_name) {
         
         // Читаем имя файла из stream
         char fileName[256];
-        fscanf(stream, "%s", fileName);
+        fscanf(stdin, "%s", fileName);
         
         // Открываем файл для чтения
         FILE* fp1 = freopen(fileName, "r", stdin);
