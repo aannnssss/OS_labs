@@ -5,7 +5,7 @@
 
 const char* CHILD_EXEC_NAME = "child";
 
-int main() {
+int main(void) {
 
     ParentRoutine(CHILD_EXEC_NAME);
 

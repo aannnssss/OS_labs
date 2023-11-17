@@ -16,6 +16,6 @@ enum PipeEnd {
 };
 
 void CreatePipe(int pipeFd[2]);
-char* ReadString(FILE* stream);
+char* ReadString(FILE* stdin);
 
 #endif //INC_1_UTILS_H

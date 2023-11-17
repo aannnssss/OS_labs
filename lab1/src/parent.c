@@ -5,21 +5,22 @@ void ParentRoutine(const char* child_exec_name) {
     // Читаем имя файла
     char fileName[256];
     fscanf(stdin, "%s", fileName);
+    //printf("namefile is %s\n", fileName);
     
     // Открываем файл для чтения
     FILE* fp1 = freopen(fileName, "r", stdin);
     if (fp1 == NULL) {
-        printf("Can't open file!\n");
+        printf("Can't open file in!\n");
         exit(EXIT_FAILURE);
     }
     
     // Создание pipe1
     int pipe1[2];
     CreatePipe(pipe1);
-
+    
     // Создание вилки
     int pid = fork();
-
+    
     if (pid == -1) {
         printf("Can't fork child!\n");
         exit(EXIT_FAILURE);
@@ -29,11 +30,11 @@ void ParentRoutine(const char* child_exec_name) {
         close(pipe1[READ_END]);
         
         // Перенаправляем стандартный вывод в pipe1[WRITE_END]
-        if (dup2(pipe1[WRITE_END], STDOUT_FILENO) == -1) {
+        if (dup2(pipe1[WRITE_END], 1) == -1) {
             printf("Can't change stdout!\n");
             exit(EXIT_FAILURE);
         }
-
+        
         char* argv[3];
         argv[0] = "child";
         argv[1] = fileName;
@@ -50,16 +51,16 @@ void ParentRoutine(const char* child_exec_name) {
 
         FILE* fp2 = freopen("output.txt", "w", stdin);
         if (fp2 == NULL) {
-            printf("Can't create file!\n");
+            printf("Can't create file output!\n");
             exit(EXIT_FAILURE);
         }
         
         int res;
-        while (read(pipe1[READ_END], &res, sizeof(int))) {
+        
+        while (read(pipe1[READ_END], &res, sizeof(int)) == sizeof(int)) {
             fprintf(fp2, "%d\n", res);
         }
         fclose(fp2);
-        //printf("File closed successfully.\n");
 
         close(pipe1[READ_END]);
 

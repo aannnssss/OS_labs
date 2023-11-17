@@ -8,8 +8,8 @@ void CreatePipe(int pipeFd[2])
     }
 }
 
-char* ReadString(FILE* stream) { 
-    if(feof(stream)) { 
+char* ReadString(FILE* stdin) { 
+    if(feof(stdin)) { 
         return NULL;
     }
 
@@ -24,7 +24,7 @@ char* ReadString(FILE* stream) {
 
     int readChar;
     int idx = 0;
-    while((readChar = getc(stream)) != EOF) { 
+    while((readChar = getc(stdin)) != EOF) { 
         buffer[idx++] = readChar;
 
         if(idx == bufferSize) {

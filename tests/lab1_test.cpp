@@ -7,7 +7,7 @@
 #include <sstream>
 #include <vector>
 
-namespace fs = std::filesystem;
+namespace fs = std::__fs::filesystem;
 
 extern "C" {
     #include <parent.h>
@@ -15,52 +15,51 @@ extern "C" {
 
 void testingProgram(const std::vector<std::string>& input, const std::vector<int>& expectedOutput) {
     
-    // Создаем файл и записываем имя входящего файла
-    std::ofstream nameFile("name.txt");
-    nameFile << "input.txt";
-    nameFile.close();
-
+    // Создаем файлы
     const char* fileWithOutput = "output.txt";
-    const char * fileWithInput = "input.txt";
+    const char* fileWithInput = "input.txt";
+    const char* fileName = "name.txt";
+
+    // Записываем название
+    std::ofstream nameFile(fileName);
+    nameFile << "input.txt" << std::endl;
 
     // Записываем входные данные в файл
     std::ofstream inFile(fileWithInput);
- 
     for (const std::string& line : input) {
         inFile << line << std::endl;
     }
     inFile.close();
 
-    // Открываем файл как stdin
+    // Отправляем название
     freopen("name.txt", "r", stdin);
-    
-    ParentRoutine(getenv("PATH_TO_CHILD"));
-    
-    // Проверяем что файл с выводом был создан
-    ASSERT_TRUE(fs::exists(fileWithOutput));
+
+    ParentRoutine("child");
+    //child = /Users/annastarostina/Downloads/programming/OS_labs/build/lab1/child
+
+    // Читаем содержимое файла вывода
     std::ifstream outFile(fileWithOutput);
 
-    // Проверяем содержимое файла вывода
+    // Проверяем что файл с выводом был создан
+    ASSERT_TRUE(fs::exists(fileWithOutput));
+
     int result;
     for (int i : expectedOutput) {
-        if (!(outFile >> result)) {
-            FAIL() << "Ошибка чтения из файла вывода";
-        }
+        outFile >> result;
         EXPECT_EQ(result, i);
     }
 
     outFile.close();
 
-    
     auto removeIfExists = [](const char* path) {
         if(fs::exists(path)) {
             fs::remove(path);
         }
     };
-
+    
     removeIfExists(fileWithInput);
     removeIfExists(fileWithOutput);
-    
+    removeIfExists(fileName);
 }
 
 TEST(firstLabTests, simpleTest) {

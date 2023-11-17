@@ -5,7 +5,7 @@ int main(void) {
     char* input = NULL;
     int strLength, result, number, start; // start - индекс начала след числа в строке
     char flag; // есть ли первое число
-
+   
     while((input = ReadString(stdin)) != NULL) {
 
         strLength = strlen(input);
@@ -15,10 +15,10 @@ int main(void) {
 
         for(int i = 0; i < strLength; ++i) {
             if(isspace(input[i])) {
-                if (atoi(input + start)==0) {
+                number = atoi(input + start);
+                if (number == 0) {
                     exit(EXIT_FAILURE);
                 }
-                number = atoi(input + start);
                 if (!flag) {
                     result = number;
                     flag = 1;
@@ -35,9 +35,11 @@ int main(void) {
         }
 
         if(flag == 1) {
-            write(1, &result, sizeof(int));
+            
+            if (write(1, &result, sizeof(int)) != sizeof(int)) {
+                exit(EXIT_FAILURE);
+            }
         }
-
         free(input);
     }
     return 0;
