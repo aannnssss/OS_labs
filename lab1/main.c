@@ -3,11 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char* CHILD_EXEC_NAME = "child";
-
 int main(void) {
 
-    ParentRoutine(CHILD_EXEC_NAME);
+    ParentRoutine(getenv("PATH_TO_CHILD"));
 
     return 0;
 }

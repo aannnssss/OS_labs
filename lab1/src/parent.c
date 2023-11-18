@@ -5,7 +5,6 @@ void ParentRoutine(const char* child_exec_name) {
     // Читаем имя файла
     char fileName[256];
     fscanf(stdin, "%s", fileName);
-    //printf("namefile is %s\n", fileName);
     
     // Открываем файл для чтения
     FILE* fp1 = freopen(fileName, "r", stdin);

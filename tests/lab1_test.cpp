@@ -34,8 +34,8 @@ void testingProgram(const std::vector<std::string>& input, const std::vector<int
     // Отправляем название
     freopen("name.txt", "r", stdin);
 
-    ParentRoutine("child");
-    //child = /Users/annastarostina/Downloads/programming/OS_labs/build/lab1/child
+    ParentRoutine(getenv("PATH_TO_CHILD"));
+    //path = /Users/annastarostina/Downloads/programming/OS_labs/build/lab1/child
 
     // Читаем содержимое файла вывода
     std::ifstream outFile(fileWithOutput);
