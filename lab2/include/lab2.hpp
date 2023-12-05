@@ -3,15 +3,17 @@
 
 #include <vector>
 #include <complex>
+#include <pthread.h>
 #include <thread>
 #include <iostream>
+#include <array>
 
-typedef std::vector<std::vector<std::complex<int> > > TMatrix;
+using TMatrix = std::vector<std::vector<std::complex<int>>>;
 
-void readMatrix(int m, int n, TMatrix& matrix);
+void ReadMatrix(int m, int n, TMatrix& matrix);
 
 TMatrix MultiplyMatrices(const TMatrix& lhs, const TMatrix& rhs, int threadCount);
 
-void printMatrix(int m, int n, const TMatrix& matrix);
+void PrintMatrix(int m, int n, const TMatrix& matrix);
 
 #endif //OS_LABS_LAB2_H

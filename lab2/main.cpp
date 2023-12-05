@@ -7,7 +7,7 @@ int main() {
     std::cin >> m1 >> n1;
     TMatrix lhs(m1, std::vector<std::complex<int> >(n1));
     std::cout << "Input matrix 1:\nexample: if you want to input 2+3i => input 2 3\n";
-    readMatrix(m1, n1, lhs);
+    ReadMatrix(m1, n1, lhs);
 
     std::cout << "Input values rows and columns for matrix 2: ";
     std::cin >> m2 >> n2;
@@ -19,11 +19,11 @@ int main() {
 
     TMatrix rhs(m2, std::vector<std::complex<int> >(n2));
     std::cout << "Input matrix 2:\nexample: if you want to input 2+3i => input 2 3\n";
-    readMatrix(m2, n2, rhs);
+    ReadMatrix(m2, n2, rhs);
 
     std::cout << "input value of threads: ";
     std::cin >> threadCount;
 
     TMatrix result = MultiplyMatrices(lhs, rhs, threadCount);
-    printMatrix(m1, n2, result);
+    PrintMatrix(m1, n2, result);
 }

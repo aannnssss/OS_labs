@@ -1,7 +1,7 @@
 #include "lab2.hpp"
 #include "utils.hpp"
 
-void readMatrix(int m, int n, TMatrix& matrix)  {
+void ReadMatrix(int m, int n, TMatrix& matrix)  {
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
             int real, imag;
@@ -62,7 +62,7 @@ TMatrix MultiplyMatrices(const TMatrix& lhs, const TMatrix& rhs, int threadCount
     return result;
 }
 
-void printMatrix(int m, int n, const TMatrix& matrix){
+void PrintMatrix(int m, int n, const TMatrix& matrix){
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             if (matrix[i][j].real() != 0) {
