@@ -6,7 +6,6 @@
 #include <chrono>
 #include <limits>
 
-
 namespace {
     TMatrix GenerateMatrix(int m, int n) {
         TMatrix result(m, std::vector<std::complex<int>>(n));
@@ -23,8 +22,8 @@ namespace {
     }
 }
 
-bool AreEqual(const TMatrix& lhs, const TMatrix& rhs) {
-    if(lhs.size() != rhs.size()) {
+bool AreEqual(TMatrix lhs, TMatrix rhs) {
+    if(lhs.size() != rhs.size() || lhs[0].size() != rhs[0].size()) {
         return false;
     }
 
@@ -44,16 +43,17 @@ bool AreEqual(const TMatrix& lhs, const TMatrix& rhs) {
 
 TEST(SecondLab, SingleThreadWithCorrectResults1) {
     ASSERT_TRUE(AreEqual(MultiplyMatrices(
-        TMatrix{
-            {std::complex<int>(2, 3), std::complex<int>(1, 4)},
-            {std::complex<int>(7, 1), std::complex<int>(2, 3)}},
-        TMatrix{
-            {std::complex<int>(0, 0), std::complex<int>(2, 3)},
-            {std::complex<int>(0, 3), std::complex<int>(1, 0)}}, 1),
-        TMatrix{
-            {std::complex<int>(-12, 3), std::complex<int>(-4, 16)},
-            {std::complex<int>(-9, 6), std::complex<int>(13, 26)}}
-    )); 
+    TMatrix{
+        {std::complex<int>(2, 3), std::complex<int>(1, 4)},
+        {std::complex<int>(7, 1), std::complex<int>(2, 3)}},
+    TMatrix{
+        {std::complex<int>(0, 0), std::complex<int>(2, 3)},
+        {std::complex<int>(0, 3), std::complex<int>(1, 0)}}, 1),
+    TMatrix{
+        {std::complex<int>(-12, 3), std::complex<int>(-4, 16)},
+        {std::complex<int>(-9, 6), std::complex<int>(13, 26)}}
+));
+
 }
 
 TEST(SecondLab, SingleThreadWithCorrectResults2) {

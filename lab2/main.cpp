@@ -25,5 +25,6 @@ int main() {
     std::cin >> threadCount;
 
     TMatrix result = MultiplyMatrices(lhs, rhs, threadCount);
+
     PrintMatrix(m1, n2, result);
 }

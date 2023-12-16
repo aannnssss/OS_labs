@@ -1,10 +1,8 @@
-#ifndef OS_LABS_LAB2_H
-#define OS_LABS_LAB2_H
+#pragma once
 
 #include <vector>
 #include <complex>
 #include <pthread.h>
-#include <thread>
 #include <iostream>
 #include <array>
 
@@ -12,8 +10,8 @@ using TMatrix = std::vector<std::vector<std::complex<int>>>;
 
 void ReadMatrix(int m, int n, TMatrix& matrix);
 
-TMatrix MultiplyMatrices(const TMatrix& lhs, const TMatrix& rhs, int threadCount);
+void* MultiplyGivenRows(void* args);
 
-void PrintMatrix(int m, int n, const TMatrix& matrix);
+TMatrix MultiplyMatrices(const TMatrix lhs, const TMatrix rhs, int threadCount);
 
-#endif //OS_LABS_LAB2_H
+void PrintMatrix(int m, int n, TMatrix& matrix);
