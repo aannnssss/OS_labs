@@ -68,7 +68,7 @@ TEST(SecondLab, SingleThreadWithCorrectResults2) {
     )); 
 }
 
-TEST(SecondLab, SingleThreadWithCorrectResults3) {
+TEST(SecondLab, NotSingleThreadWithCorrectResults1) {
     ASSERT_TRUE(AreEqual(MultiplyMatrices(
         TMatrix{
             {std::complex<int>(2, 3), std::complex<int>(7, 0)},
@@ -77,7 +77,7 @@ TEST(SecondLab, SingleThreadWithCorrectResults3) {
             {std::complex<int>(2, 8), std::complex<int>(-1, -1)}},
         TMatrix{
             {std::complex<int>(0, 0), std::complex<int>(-3, -7), std::complex<int>(-2, 1)},
-            {std::complex<int>(7, -4), std::complex<int>(0, -2), std::complex<int>(-1, -1)}}, 1),
+            {std::complex<int>(7, -4), std::complex<int>(0, -2), std::complex<int>(-1, -1)}}, 5),
         TMatrix{
             {std::complex<int>(49, -28), std::complex<int>(15, -37), std::complex<int>(-14, -11)},
             {std::complex<int>(28, 49), std::complex<int>(14, 0), std::complex<int>(7, -7)},
